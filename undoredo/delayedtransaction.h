@@ -6,13 +6,13 @@
 namespace undoredo {
 namespace transactions {
 
-/// the default implementation of the store
+/// Grouping of transactions into a single one
 template<class T, class TMemento = typename T::MementoType>
 class DelayedTransaction : public std::enable_shared_from_this<DelayedTransaction<T,typename T::MementoType> >
 {
 private:
-    std::shared_ptr<TMemento> Undo_;
-    std::shared_ptr<TMemento> Redo_;
+    TMemento Undo_;
+    TMemento Redo_;
     T* Object_;
  
 public:

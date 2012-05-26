@@ -167,3 +167,31 @@ TEST_F(TransactionStoreTests,UndoThenRedo)
 	ASSERT_NO_THROW(ts.UndoLastTransaction());
 	ASSERT_EQ(1,o1->Get().first);
 }
+
+class LifetimeTester : public MyThirdOriginator {
+public:
+	static int Count;
+public:
+	LifetimeTester(std::string n):MyThirdOriginator(n) { Count++; }
+	~LifetimeTester() {
+		--Count;
+	}
+};
+int LifetimeTester::Count=0;
+
+TEST_F(TransactionStoreTests,Lifetime)
+{
+	{
+        std::shared_ptr<LifetimeTester> O3(new LifetimeTester("O3"));
+        ts.AddTransaction(O3->UndoableSet(1,"O3.1"));
+        ts.AddTransaction(O3->UndoableSet(2,"O3.2"));
+    }
+
+	ASSERT_NO_THROW(ts.UndoLastTransaction());
+	ASSERT_NO_THROW(ts.RedoLastTransaction());
+	ASSERT_EQ(1,LifetimeTester::Count);
+
+	ASSERT_NO_THROW(ts.Purge());
+
+	ASSERT_EQ(0,LifetimeTester::Count);
+}

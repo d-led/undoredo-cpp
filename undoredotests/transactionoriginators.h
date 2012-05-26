@@ -62,7 +62,7 @@ public:
  
     MyThirdOriginator(std::string n):state(0),name(n) {}
  
-    ~MyThirdOriginator()
+    virtual ~MyThirdOriginator()
     {
     }
 };

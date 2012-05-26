@@ -71,6 +71,11 @@ public:
     {
         s = state;
     }
+
+	int Get() const
+	{
+		return s;
+	}
  
     MySecondOriginator():s(0){}
  
