@@ -1,0 +1,19 @@
+#pragma once
+
+namespace undoredo {
+namespace undoable {
+
+struct Undoable
+{
+	virtual void Undo()=0;
+	virtual ~Undoable() {}
+};
+
+struct Redoable
+{
+	virtual void Redo()=0;
+	virtual ~Redoable() {}
+};
+
+} //undoable
+} //undoredo
