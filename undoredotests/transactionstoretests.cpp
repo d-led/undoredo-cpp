@@ -125,34 +125,45 @@ TEST_F(TransactionStoreTests,Interleaving)
 	ASSERT_EQ(2,target.Get());
 }
 
-TEST_F(TransactionStoreTests,Redo)
+TEST_F(TransactionStoreTests,CompositeTransaction)
 {
-	//ts.AddTransaction(RepeatedPrint("Action 1\n"));
- 
     std::shared_ptr<CompositeTransaction> composite(new CompositeTransaction);
-    //composite->AddTransaction(RepeatedPrint("Action 2.1\n"));
-    //composite->AddTransaction(RepeatedPrint("Action 2.2\n"));
- 
+   
+	target.Increment();
+	composite->AddTransaction(std::make_pair(std::bind(&Target::Decrement,&target),std::bind(&Target::Increment,&target))); //1
+	target.Increment();
+	composite->AddTransaction(std::make_pair(std::bind(&Target::Decrement,&target),std::bind(&Target::Increment,&target))); //1
+	ASSERT_EQ(2,target.Get());
+
     ts.AddTransaction(composite->Get());
- 
-    //ts.AddTransaction(RepeatedPrint("Action 3\n"));
- 
-    //ts.UndoLastTransaction();
-    //ts.UndoLastTransaction();
- 
-    //ts.AddTransaction(RepeatedPrint("Action 4\n"));
- 
- 
-    while (true)
-    {
-        try
-        {
-            ts.RedoLastTransaction();
-        }
-        catch(std::exception& e)
-        {
-            std::cout<<e.what()<<std::endl;
-            break;
-        }
-    }
+
+	ASSERT_NO_THROW(ts.UndoLastTransaction());
+
+	ASSERT_EQ(0,target.Get());
+	ASSERT_THROW(ts.UndoLastTransaction(),std::runtime_error);
+	ASSERT_EQ(0,target.Get());
+
+	ASSERT_NO_THROW(ts.RedoLastTransaction());
+	ASSERT_EQ(2,target.Get());
+	ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+}
+
+TEST_F(TransactionStoreTests,UndoThenRedo)
+{
+	ts.AddTransaction(o1->UndoableSet(1,"o1"));
+	ts.AddTransaction(o1->UndoableSet(2,"o1"));
+	ts.AddTransaction(o1->UndoableSet(3,"o1"));
+	ASSERT_EQ(3,o1->Get().first);
+
+	ts.UndoLastTransaction();
+	ts.UndoLastTransaction();
+
+	ASSERT_EQ(1,o1->Get().first);
+	ts.AddTransaction(o1->UndoableSet(4,"o1"));
+
+	ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+	ASSERT_EQ(4,o1->Get().first);
+
+	ASSERT_NO_THROW(ts.UndoLastTransaction());
+	ASSERT_EQ(1,o1->Get().first);
 }
