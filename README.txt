@@ -25,7 +25,8 @@ One could use BOOST.TR1 or provide compile time alias choice for the std::tr1 na
 
 Follow the tests in the undoredotests folder
 
+= License =
 
 MIT License (http://www.opensource.org/licenses/mit-license.php)
 
-googletest, Premake, Loki and BOOST libraries retain their respective licenses
+googletest, Premake and BOOST retain their respective licenses
