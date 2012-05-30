@@ -1,7 +1,7 @@
 = Summary =
 
 
-This is a research on the ways to implement generic Undo/Redo mechanisms in C++ by Dmitry Ledentsov
+This is a research on the ways to implement generic Undo/Redo mechanisms in C++
 
 
 == Used in the project ==
@@ -25,6 +25,6 @@ The Memento part can be used with older Microsoft compilers, however the tests a
 Follow the tests in the undoredotests folder
 
 
-= Info =
+MIT License (http://www.opensource.org/licenses/mit-license.php)
 
-See http://code.google.com/p/undoredo-cpp/
+googletest, Premake, Loki and BOOST libraries retain their respective licenses
