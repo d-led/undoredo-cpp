@@ -47,6 +47,16 @@ public:
         Undo_.clear();
         Redo_.clear();
     }
+    
+    bool HasUndo()
+    {
+        return Undo_.size()>0;
+    }
+
+    bool HasRedo()
+    {
+        return Redo_.size()>0;
+    }
 };
 
 } //transactions
