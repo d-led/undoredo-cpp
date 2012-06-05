@@ -26,26 +26,26 @@ TEST_F(MyOriginatorMementoTests, SaveState) {
 TEST_F(MyOriginatorMementoTests, GetSavedState) {
 	MyOriginator::MementoType Memento=O.SaveState();
 
-	ASSERT_EQ("",Memento->GetSavedState().Get());
+	ASSERT_EQ("",Memento->GetSavedState().GetString());
 
-	O.Set(teststring);
+	O.Set(teststring,0);
 
 	Memento=O.SaveState();
 
-	ASSERT_EQ(teststring,Memento->GetSavedState().Get());
+	ASSERT_EQ(teststring,Memento->GetSavedState().GetString());
 }
 
 TEST_F(MyOriginatorMementoTests, RestoreState) {
-	O.Set(teststring);
+	O.Set(teststring,0);
 
 	MyOriginator::MementoType Memento=O.SaveState();
 
-	O.Set(teststring2);
+	O.Set(teststring2,0);
 	MyOriginator::MementoType Memento2=O.SaveState();
 
-	ASSERT_EQ(teststring2,Memento2->GetSavedState().Get());
+	ASSERT_EQ(teststring2,Memento2->GetSavedState().GetString());
 
 	O.RestoreState(Memento2);
 
-	ASSERT_EQ(teststring2,O.Get());
+	ASSERT_EQ(teststring2,O.GetString());
 }

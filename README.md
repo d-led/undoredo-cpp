@@ -25,8 +25,66 @@ One could use BOOST.TR1 or provide compile time alias choice for the std::tr1 na
 Usage
 =====
 
+### Memento
+The classes provided in the project can be mixed arbitrarily. Let's start with the Memento itself. Considering a class MyOriginator:
+<pre><code class="cpp">class MyOriginator
+{
+private:
+	class State
+	{
+	public:
+		void Set(const std::string& state,int i)
+		{
+			s = state;
+			n = i;
+		}
 
-Follow the tests in the undoredotests folder
+		std::string GetString() const {
+			return s;
+		}
+	private:
+		std::string s;
+		int n;
+	};
+    State state_;
+ 
+public:
+ 
+    void Set(const std::string& state, int i)
+    {
+        state_.Set(state,i);
+    }
+
+	std::string GetString() const {
+		return state_.GetString();
+	}
+};
+</code></pre>
+
+we would like to be able to store its internal state, which is stored in a private inner class State. We could do it directly for each class we would
+like to support saving its state. Considering that not each part of the internal state should known outside, the [Memento pattern](http://en.wikipedia.org/wiki/Memento_pattern) comes to mind. To document the pattern, it can be explicitly called Memento, implemented
+as a C++ template class, taking the internal state as the template parameter. Only that class would be allowed to modify the state directly through the
+dedicated interface added to the MyOriginator class:
+
+<pre><code class="cpp">public:
+    typedef std::shared_ptr<Memento<State> > MementoType;
+ 
+    MementoType SaveState()
+    {
+        return MementoType(new Memento<State>(state_));
+    }
+ 
+    void RestoreState(MementoType memento)
+    {
+        state_ = memento->GetSavedState();
+    }
+</code></pre>
+
+To be able to use the memento conveniently with Caretaker classes, the MementoType type is defined. Although the encapsulation in C++ is syntactical,
+the explicit use of the Memento pattern should discourage using the "leaked" internal state. The <code>SaveState</code> and <code>RestoreState</code> methods
+implement the pattern.
+
++Follow the tests in the undoredotests folder
 
 
 Hosting

@@ -18,28 +18,30 @@ private:
 	class State
 	{
 	public:
-		void Set(const std::string& state)
+		void Set(const std::string& state,int i)
 		{
 			s = state;
+			n = i;
 		}
 
-		std::string Get() const {
+		std::string GetString() const {
 			return s;
 		}
 	private:
 		std::string s;
+		int n;
 	};
     State state_;
  
 public:
  
-    void Set(const std::string& state)
+    void Set(const std::string& state, int i)
     {
-        state_.Set(state);
+        state_.Set(state,i);
     }
 
-	std::string Get() const {
-		return state_.Get();
+	std::string GetString() const {
+		return state_.GetString();
 	}
  
 //--- class-specific memento
