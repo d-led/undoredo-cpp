@@ -68,6 +68,7 @@ like to support saving its state. Considering that not each part of the internal
 as a C++ template class, taking the internal state as the template parameter. Only that class would be allowed to modify the state directly through the
 dedicated interface added to the MyOriginator class:
 
+<pre>
   public:
   typedef std::shared_ptr<Memento<State> > MementoType;
   
@@ -80,6 +81,7 @@ dedicated interface added to the MyOriginator class:
   {
       state_ = memento->GetSavedState();
   }
+</pre>
 
 To be able to use the memento conveniently with Caretaker classes, the MementoType type is defined. Although the encapsulation in C++ is syntactical,
 the explicit use of the Memento pattern should discourage using the "leaked" internal state. The <code>SaveState</code> and <code>RestoreState</code> methods
