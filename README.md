@@ -46,8 +46,7 @@ The classes provided in the project can be mixed arbitrarily. Let's start with t
       std::string s;
       int n;
     };
-      State state_;
-   
+      State state_; 
   public:
    
       void Set(const std::string& state, int i)
