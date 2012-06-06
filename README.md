@@ -27,6 +27,7 @@ Usage
 
 ### Memento
 The classes provided in the project can be mixed arbitrarily. Let's start with the Memento itself. Considering a class MyOriginator:
+
   class MyOriginator
   {
   private:
