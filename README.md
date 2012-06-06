@@ -58,7 +58,7 @@ The classes provided in the project can be mixed arbitrarily. Let's start with t
     std::string GetString() const {
       return state_.GetString();
     }
-  };
+    };
 
 we would like to be able to store its internal state, which is stored in a private inner class State. We could do it directly for each class we would
 like to support saving its state. Considering that not each part of the internal state should known outside, the [Memento pattern](http://en.wikipedia.org/wiki/Memento_pattern) comes to mind. To document the pattern, it can be explicitly called Memento, implemented
