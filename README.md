@@ -65,7 +65,7 @@ like to support saving its state. Considering that not each part of the internal
 as a C++ template class, taking the internal state as the template parameter. Only that class would be allowed to modify the state directly through the
 dedicated interface added to the MyOriginator class:
 
-  public:
+      public:
       typedef std::shared_ptr<Memento<State> > MementoType;
    
       MementoType SaveState()
