@@ -12,6 +12,23 @@
 using namespace undoredo::transactions;
 using namespace undoredo::transactions::test;
 
+TEST(DocuTransactionStoreTest,Main)
+{
+	TransactionStore<std::list<Transaction> > ts;
+
+	std::shared_ptr<SimpleTransactionStateExample> E(new SimpleTransactionStateExample);
+	E->Set(0);
+
+	ts.AddTransaction(E->SetTransaction(1));
+	ASSERT_EQ(1,E->Get());
+
+	ts.UndoLastTransaction();
+	ASSERT_EQ(0,E->Get());
+
+	ts.RedoLastTransaction();
+	ASSERT_EQ(1,E->Get());
+}
+
 class TransactionStoreTests : public ::testing::Test {
  protected:
   virtual void SetUp() {

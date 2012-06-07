@@ -25,10 +25,12 @@ public:
 	}
     Transaction SetTransaction(int s)
     {
-        return std::make_pair(
+        Transaction Res=std::make_pair(
 								std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
 								std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
                              );
+		Set(s);
+		return Res;
     }
 };
 

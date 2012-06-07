@@ -129,16 +129,66 @@ An object can offer a method, which changes the state of the object and returns 
     	{
     		return state;
     	}
-        Transaction SetTransaction(int s)
-        {
-            return std::make_pair(
-    								std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
-    								std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
-                                 );
-        }
+    Transaction SetTransaction(int s)
+    {
+    	Transaction Res=std::make_pair(
+    							std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
+    							std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
+    						 );
+    	Set(s);
+    	return Res;
+    }
     };
 
-.
+Taking an undo/redo dedicated transaction store one can use the <code>SetTransaction</code> method of the example class as follows:
+
+    TransactionStore<std::list<Transaction> > ts;
+
+    std::shared_ptr<SimpleTransactionStateExample> E(new SimpleTransactionStateExample);
+    E->Set(0);
+    
+    ts.AddTransaction(E->SetTransaction(1)); // undoable change of state
+    ASSERT_EQ(1,E->Get());
+    
+    ts.UndoLastTransaction(); // undo
+    ASSERT_EQ(0,E->Get());
+    
+    ts.RedoLastTransaction(); // redo
+    ASSERT_EQ(1,E->Get());
+
+#### Object lifetime management
+
+The transactions may contain references to objects that no longer exist within the context, or the transaction
+may be the creation of an object. This has to be taken care of by the implementer, i.e. with the help of some object
+registration mechanism. In non-critical cases, such as here, this can be achieved by sharing the instance using a smart pointer.
+Therefore, the example class uses <code>std::enable_shared_from_this</code>.
+	
+### Memento and transactions
+
+One can combine the encapsulation of the internal state and the transactions by having a specialized object of type <code>DelayedTransaction</code> prepare the transaction of setting or resetting the internal state.
+
+    TransactionStore<std::list<Transaction> > ts;
+    std::shared_ptr<MyOriginator> MO(new MyOriginator); // Memento originator
+    std::shared_ptr<DelayedTransaction<MyOriginator> > DT;
+    
+    DT.reset(new DelayedTransaction<MyOriginator>(MO.get()));
+    DT->BeginTransaction(); // saves MO's state for undo
+    MO->Set("test1",1);
+    ts.AddTransaction(DT->EndTransaction()); // EndTransaction saves MO's state for redo and returns the transaction
+    
+    DT.reset(new DelayedTransaction<MyOriginator>(MO.get()));
+    DT->BeginTransaction();
+    MO->Set("test2",2);
+    MO->Set("test3",3); //this state will be saved
+    ts.AddTransaction(DT->EndTransaction());
+    
+    ts.UndoLastTransaction();
+    ASSERT_EQ("test1",MO->GetString());
+    ts.RedoLastTransaction();
+    ASSERT_EQ("test3",MO->GetString());
+    
+    ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+
 	
 +Follow the tests in the undoredotests folder
 

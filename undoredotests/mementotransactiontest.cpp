@@ -13,6 +13,33 @@
 using namespace undoredo::transactions;
 using namespace undoredo::memento::test;
 
+TEST(MementoTransactionDocuTest,Main)
+{
+
+	TransactionStore<std::list<Transaction> > ts;
+    std::shared_ptr<MyOriginator> MO(new MyOriginator); // Memento originator
+    std::shared_ptr<DelayedTransaction<MyOriginator> > DT;
+ 
+    DT.reset(new DelayedTransaction<MyOriginator>(MO.get()));
+    DT->BeginTransaction();
+    MO->Set("test1",1);
+    ts.AddTransaction(DT->EndTransaction());
+ 
+    DT.reset(new DelayedTransaction<MyOriginator>(MO.get()));
+    DT->BeginTransaction();
+    MO->Set("test2",2);
+	MO->Set("test3",3); //this state will be saved
+    ts.AddTransaction(DT->EndTransaction());
+ 
+ 
+    ts.UndoLastTransaction();
+	ASSERT_EQ("test1",MO->GetString());
+    ts.RedoLastTransaction();
+	ASSERT_EQ("test3",MO->GetString());
+
+	ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+}
+
 TEST(MementoTransactionTest,Main)
 {
 	TransactionStore<std::list<Transaction> > ts;
