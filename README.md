@@ -84,11 +84,38 @@ dedicated interface added to the MyOriginator class:
         state_ = memento->GetSavedState();
     }
 
+### MementoStore
 
 To be able to use the memento conveniently with Caretaker classes, the MementoType type is defined. Although the encapsulation in C++ is syntactical,
 the explicit use of the Memento pattern should discourage using the "leaked" internal state. The <code>SaveState</code> and <code>RestoreState</code> methods
-implement the pattern.
+implement the pattern. Another convenience is to be able to use Caretaker classes matching the memento interface. Adding the following typedef we can use the
+MementoStore:
 
+    typedef MementoStore<MySecondOriginator> MementoStoreType;
+
+Using the StlMementoStore class we can store and restore states of individual objects, or all objects at once. For the demonstration purposes the objects
+are identified by their raw pointers, however other schemes can be envisioned. Using the Store looks like that:
+
+    auto savedStates=StlMementoStore<MyOriginator,std::map<MyOriginator*,std::list<typename MyOriginator::MementoType> >>();
+    MyOriginator O;
+    O.Set("test",1);
+    savedStates.Save(&O); // saving the current state
+    O.Set("bla",2); // setting a new state
+    ASSERT_EQ("bla",O.GetString());
+    savedStates.Undo(&O); // restoring to the saved state
+    ASSERT_EQ("test",O.GetString());
+
+### Transaction and TransactionStore
+
+A typical undo/redo scenario does not include explicit choice of the object to be restored to its previous state. The change of the state of many
+different objects should be taken into account and assembled in an undo/redo stack. Each element on that stack is a transaction that can be undone or
+redone. Here, the transaction is modeled by a pair of <code>std::function</code>s:
+
+    typedef std::function<void ()> Action;
+    typedef std::pair<Action/*Undo*/,Action/*Redo*/> Transaction;
+
+An object can offer a method, which changes the state of the object and returns a transaction that can undo or redo the state change.
+	
 +Follow the tests in the undoredotests folder
 
 

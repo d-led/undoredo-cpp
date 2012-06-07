@@ -26,6 +26,18 @@ class StlMementoStoreTests : public ::testing::Test {
   std::shared_ptr<MyOriginator::MementoStoreType> savedStates;
 };
 
+TEST(StlMementoDocuTest,Main)
+{
+	auto savedStates=StlMementoStore<MyOriginator,std::map<MyOriginator*,std::list<typename MyOriginator::MementoType> >>();
+	MyOriginator O;
+	O.Set("test",1);
+	savedStates.Save(&O);
+	O.Set("bla",2);
+	ASSERT_EQ("bla",O.GetString());
+	savedStates.Undo(&O);
+	ASSERT_EQ("test",O.GetString());
+}
+
 TEST_F(StlMementoStoreTests,Construction)
 {
 	ASSERT_NE(nullptr,savedStates);
