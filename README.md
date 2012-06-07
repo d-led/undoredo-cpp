@@ -17,7 +17,8 @@ Compilers
 known to work with
  * Visual Studio 2010 (Express)
  * MinGW >4.6.1
-* clang 3.0
+ * gcc 4.6.3 (linux)
+ * clang 3.0 (linux)
 
 The Memento part can be used with older Microsoft compilers, however the tests are defined in terms of tr1 classes residing in the std namespace.
 One could use BOOST.TR1 or provide compile time alias choice for the std::tr1 namespace
