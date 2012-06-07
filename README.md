@@ -165,7 +165,7 @@ Therefore, the example class uses <code>std::enable_shared_from_this</code>.
 	
 ### Memento and transactions
 
-One can combine the encapsulation of the internal state and the transactions by having a specialized object of type <code>DelayedTransaction</code> prepare the transaction of setting or resetting the internal state.
+One can combine the encapsulation of the internal state and the transactions by having a specialized object of type <code>DelayedTransaction</code> prepare the transaction for setting and resetting the internal state.
 
     TransactionStore<std::list<Transaction> > ts;
     std::shared_ptr<MyOriginator> MO(new MyOriginator); // Memento originator
