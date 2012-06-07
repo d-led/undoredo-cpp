@@ -114,7 +114,31 @@ redone. Here, the transaction is modeled by a pair of <code>std::function</code>
     typedef std::function<void ()> Action;
     typedef std::pair<Action/*Undo*/,Action/*Redo*/> Transaction;
 
-An object can offer a method, which changes the state of the object and returns a transaction that can undo or redo the state change.
+An object can offer a method, which changes the state of the object and returns a transaction that can undo or redo the state change:
+
+    class SimpleTransactionStateExample : public std::enable_shared_from_this<SimpleTransactionStateExample>
+    {
+    private:
+        int state;
+    public:
+        void Set(int s)
+        {
+            state=s;
+        }
+    	int Get() const
+    	{
+    		return state;
+    	}
+        Transaction SetTransaction(int s)
+        {
+            return std::make_pair(
+    								std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
+    								std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
+                                 );
+        }
+    };
+
+.
 	
 +Follow the tests in the undoredotests folder
 

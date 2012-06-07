@@ -10,6 +10,28 @@ namespace undoredo {
 namespace transactions {
 namespace test {
 
+class SimpleTransactionStateExample : public std::enable_shared_from_this<SimpleTransactionStateExample>
+{
+private:
+    int state;
+public:
+    void Set(int s)
+    {
+        state=s;
+    }
+	int Get() const
+	{
+		return state;
+	}
+    Transaction SetTransaction(int s)
+    {
+        return std::make_pair(
+								std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
+								std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
+                             );
+    }
+};
+
 /// Transaction-undoable example class
 class MyThirdOriginator : public std::enable_shared_from_this<MyThirdOriginator>
 {
