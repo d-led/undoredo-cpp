@@ -67,7 +67,7 @@ The classes provided in the project can be mixed arbitrarily. Let's start with t
   };
 </pre>
 
-we would like to be able to store its internal state, which is stored in a private inner class State. We could do it directly for each class we would
+we would like to be able to store its internal state, which is stored in a private variable of an inner class State. We could do it directly for each class we would
 like to support saving its state. Considering that not each part of the internal state should known outside, the [Memento pattern](http://en.wikipedia.org/wiki/Memento_pattern) comes to mind. To document the pattern, it can be explicitly called Memento, implemented
 as a C++ template class, taking the internal state as the template parameter. Only that class would be allowed to modify the state directly through the
 dedicated interface added to the MyOriginator class:
