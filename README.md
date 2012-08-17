@@ -52,6 +52,7 @@ private:
         std::string s;
         int n;
     };
+    
     State state_;
 public:
 
@@ -131,23 +132,25 @@ class SimpleTransactionStateExample : public std::enable_shared_from_this<Simple
 private:
     int state;
 public:
-    void Set(int s)
-    {
-        state=s;
-    }
+	void Set(int s)
+	{
+		state=s;
+	}
+	
 	int Get() const
 	{
 		return state;
 	}
-Transaction SetTransaction(int s)
-{
-	Transaction Res=std::make_pair(
-							std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
-							std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
-						 );
-	Set(s);
-	return Res;
-}
+	
+	Transaction SetTransaction(int s)
+	{
+		Transaction Res=std::make_pair	(
+						std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
+						std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
+						);
+		Set(s);
+		return Res;
+	}
 };
 ```
 
