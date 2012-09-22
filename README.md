@@ -16,7 +16,7 @@ Compilers
 -------------------
 
 known to work with
- * Visual Studio 2010 (Express)
+ * Visual Studio 2008, 2010, 2012 (Express)
  * MinGW >4.6.1
  * gcc 4.6.3 (linux)
  * clang 3.0 (linux)
