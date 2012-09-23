@@ -29,6 +29,11 @@ function CompilerSpecificConfiguration()
 		postbuildcommands { "\"$(TargetPath)\"" }
 end
 
+function ConfigureGtestTuple()
+	configuration { "vs2010"}
+		defines { "GTEST_HAS_TR1_TUPLE=0" }
+end
+
 -- A solution contains projects, and defines the available configurations
 local sln=solution "undoredo-cpp"
     location "Build"
@@ -56,6 +61,7 @@ local gtest=project "gtest-lib"
 		path.join(basedir,"gtest-all.cc"),
 		path.join(basedir,"gtest.h")
 	}
+	ConfigureGtestTuple()
 
 ----------------------------------------------------------------------------------------------------------------
 
@@ -67,6 +73,7 @@ local gtestmain=project "gtest-main"
 	files {
 		path.join(basedir,"gtest_main.cc")
 	}
+	ConfigureGtestTuple()
 	
 ----------------------------------------------------------------------------------------------------------------
 
@@ -100,3 +107,4 @@ local undoredotests=project "undoredotests"
 		"gtest-main"
 	}
 	CompilerSpecificConfiguration()
+	ConfigureGtestTuple()
