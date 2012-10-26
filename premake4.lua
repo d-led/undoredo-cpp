@@ -1,3 +1,30 @@
+local OS=os.get()
+
+local definitions = {
+	dir = {
+		linux = "ls",
+		windows = "dir"
+	},
+	BOOST =  {
+		linux = "/home/dled/src/boost_1_51_0", --customize
+		windows = os.getenv("BOOST")
+	},
+	BOOST_LIB = {
+		linux = path.join("/home/dled/src/boost_1_51_0/","stage/lib"), --customize
+		windows = path.join(os.getenv("BOOST"),"stage/lib")
+	},
+	links = {
+		linux = {"pthread"},
+		windows=""
+	}
+}
+
+local cfg={}
+
+for i,v in pairs(definitions) do
+ cfg[i]=definitions[i][OS]
+end
+
 -- Apply to current "filter" (solution/project)
 function DefaultConfig()
 	location "Build"
@@ -104,7 +131,8 @@ local undoredotests=project "undoredotests"
 	}
 	links {
 		"gtest-lib",
-		"gtest-main"
+		"gtest-main",
+		cfg.links
 	}
 	CompilerSpecificConfiguration()
 	ConfigureGtestTuple()

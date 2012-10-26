@@ -18,7 +18,7 @@ Compilers
 known to work with
  * Visual Studio 2008, 2010, 2012 (Express)
  * MinGW >4.6.1
- * gcc 4.6.3 (linux)
+ * gcc 4.6.3, 4.7.2 (linux)
  * clang 3.0 (linux)
 
 The Memento part can be used with older Microsoft compilers, however the tests are defined in terms of tr1 classes residing in the std namespace.
