@@ -5,6 +5,9 @@ branches:
   only:
    - catchmoci
 
+before_script:
+   - ls
+
 script:
   - chmod +x premake4
   - ./premake4 gmake
