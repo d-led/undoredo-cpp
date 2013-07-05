@@ -5,9 +5,7 @@ branches:
   only:
     - catchmoci
 
-# generate build
-before_script:
-  - ./premake4 gmake
-
 script:
+  - ./premake4 gmake
   - make -C Build
+ 
