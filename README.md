@@ -1,16 +1,15 @@
 Summary
 =======
 
-[![Build Status](https://travis-ci.org/d-led/undoredo-cpp.png)](https://travis-ci.org/d-led/undoredo-cpp) - "inconclusive"
+[![Build Status](https://travis-ci.org/d-led/undoredo-cpp.png?branch=catchmoci)](https://travis-ci.org/d-led/undoredo-cpp) - "inconclusive"
 
-This is a research on the ways to implement generic Undo/Redo mechanisms in C++.
-The Undo/Redo mechanisms presented here are not binary safe, but might assist in implementing binary safe undo/redo aware objects.
-
+This is a collection of header-only classes enabling some undo-redo/transaction functionality, started as a research on the ways to implement generic Undo/Redo mechanisms in C++.
+The classes are combinable to form sensible undo/redo features and should be easy to use after a couple of exercises.
 
 Used in the project
 -------------------
 
- * [googletest](http://code.google.com/p/googletest/) for tests
+ * [catch](http://catch-lib.net) for tests
  * [Premake](http://industriousone.com/premake) for generating makefiles
 
 Compilers
