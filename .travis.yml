@@ -4,6 +4,10 @@ language: cpp
 branches:
   only:
     - catchmoci
+	
+# generate build
+before_script:
+	- ./premake4 gmake
 
 script:
-  - echo CC=${CC} CXX=${CXX}
+  - make -C Build
