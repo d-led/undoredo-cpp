@@ -1,6 +1,7 @@
 Summary
 =======
 
+[![Build Status](https://travis-ci.org/d-led/undoredo-cpp.png)](https://travis-ci.org/d-led/undoredo-cpp) - "inconclusive"
 
 This is a research on the ways to implement generic Undo/Redo mechanisms in C++.
 The Undo/Redo mechanisms presented here are not binary safe, but might assist in implementing binary safe undo/redo aware objects.
