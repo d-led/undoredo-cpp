@@ -1,4 +1,9 @@
 language: cpp
 
+# whitelist
+branches:
+  only:
+    - catchmoci
+
 script:
   - echo CC=${CC} CXX=${CXX}
