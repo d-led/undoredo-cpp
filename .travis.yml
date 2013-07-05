@@ -9,6 +9,7 @@ before_script:
    - cd d-led/undoredo-cpp
 
 script:
+  - chmod +x premake4
   - ./premake4 gmake
   - make -C Build
  
