@@ -3,7 +3,10 @@ language: cpp
 # whitelist
 branches:
   only:
-    - catchmoci
+   - catchmoci
+
+before_script:
+   - cd d-led/undoredo-cpp
 
 script:
   - ./premake4 gmake
