@@ -27,12 +27,12 @@ end
 function DefaultConfig()
 	location "Build"
 	configuration "Debug"
-		defines { "DEBUG", "_DEBUG" }
+		defines { "DEBUG", "_DEBUG", "CATCH_CONFIG_CPP11_NULLPTR" }
 		objdir "Build/obj"
 		targetdir "Build/Debug"
 		flags { "Symbols" }
 	configuration "Release"
-		defines { "RELEASE" }
+		defines { "RELEASE", "CATCH_CONFIG_CPP11_NULLPTR" }
 		objdir "Build/obj"
 		targetdir "Build/Release"
 		flags { "Optimize" }
@@ -62,7 +62,8 @@ local sln=solution "undo-redo"
 	platforms { "native" }
 	includedirs {
 		sln.basedir,
-		path.join(sln.basedir,"undoredo")
+		path.join(sln.basedir,"undoredo"),
+		path.join(sln.basedir,"Catch/single_include")
 	}
 	vpaths {
 		["Headers"] = "**.h",
@@ -80,13 +81,7 @@ local undoredotests=project "undoredotests"
 		path.join(basedir,"**.cpp"),
 		path.join(basedir,"**.h")
 	}
-	uses {
-		"gtest-lib",
-		"gtest-main"
-	}
 	links {
-		"gtest-lib",
-		"gtest-main",
 		cfg.links
 	}
 	SetUpCompilerSpecificPostBuildEvent()

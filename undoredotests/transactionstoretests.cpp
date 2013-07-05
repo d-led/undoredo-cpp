@@ -7,12 +7,12 @@
 #include <stdexcept>
 #include <memory>
 
-#include "gtest/gtest.h"
+#include "catch.hpp"
 
 using namespace undoredo::transactions;
 using namespace undoredo::transactions::test;
 
-TEST(DocuTransactionStoreTest,Main)
+TEST_CASE("DocuTransactionStoreTest,Main")
 {
 	TransactionStore<std::list<Transaction> > ts;
 
@@ -20,18 +20,18 @@ TEST(DocuTransactionStoreTest,Main)
 	E->Set(0);
 
 	ts.AddTransaction(E->SetTransaction(1));
-	ASSERT_EQ(1,E->Get());
+	REQUIRE( E->Get() == 1 );
 
 	ts.UndoLastTransaction();
-	ASSERT_EQ(0,E->Get());
+	REQUIRE( E->Get() == 0 );
 
 	ts.RedoLastTransaction();
-	ASSERT_EQ(1,E->Get());
+	REQUIRE( E->Get() == 1 );
 }
 
-class TransactionStoreTests : public ::testing::Test {
- protected:
-  virtual void SetUp() {
+class TransactionStoreTests {
+ public:
+  TransactionStoreTests() {
 	  o1.reset(new MyThirdOriginator("o1"));
 	  o2.reset(new MyThirdOriginator("o2"));
   }
@@ -40,109 +40,109 @@ class TransactionStoreTests : public ::testing::Test {
   std::shared_ptr<MyThirdOriginator> o1,o2;
 };
 
-TEST_F(TransactionStoreTests,Initial)
+TEST_CASE_METHOD(TransactionStoreTests,"TransactionStoreTests,Initial")
 {
-	ASSERT_NO_THROW(ts.Purge());
+	REQUIRE_NOTHROW(ts.Purge());
 
-	ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+	REQUIRE_THROWS_AS(ts.RedoLastTransaction(),std::runtime_error);
 
-	ASSERT_THROW(ts.UndoLastTransaction(),std::runtime_error);
+	REQUIRE_THROWS_AS(ts.UndoLastTransaction(),std::runtime_error);
 }
 
-TEST_F(TransactionStoreTests,Purge)
+TEST_CASE_METHOD(TransactionStoreTests,"Purge")
 {
-	ASSERT_EQ(0,target.Get());
+	REQUIRE( target.Get() == 0 );
 	target.Increment();
-	ASSERT_EQ(1,target.Get());
+	REQUIRE( target.Get() == 1 );
 	ts.AddTransaction(std::make_pair(std::bind(&Target::Decrement,&target),std::bind(&Target::Increment,&target))); //1
-	ASSERT_EQ(1,target.Get());
+	REQUIRE( target.Get() == 1 );
 
-	ASSERT_NO_THROW(ts.UndoLastTransaction());
-	ASSERT_NO_THROW(ts.RedoLastTransaction());
-	ASSERT_EQ(1,target.Get());
+	REQUIRE_NOTHROW(ts.UndoLastTransaction());
+	REQUIRE_NOTHROW(ts.RedoLastTransaction());
+	REQUIRE( target.Get() == 1 );
 
 	ts.Purge();
-	ASSERT_EQ(1,target.Get());
+	REQUIRE( target.Get() == 1 );
 
-	ASSERT_THROW(ts.UndoLastTransaction(),std::runtime_error);
+	REQUIRE_THROWS_AS(ts.UndoLastTransaction(),std::runtime_error);
 }
 
-TEST_F(TransactionStoreTests,Interleaving)
+TEST_CASE_METHOD(TransactionStoreTests,"Interleaving")
 {
-	ASSERT_EQ(0,target.Get());
+	REQUIRE( target.Get() == 0 );
 	target.Increment();
-	ASSERT_EQ(1,target.Get());
+	REQUIRE( target.Get() == 1 );
 	ts.AddTransaction(std::make_pair(std::bind(&Target::Decrement,&target),std::bind(&Target::Increment,&target))); //1
-	ASSERT_EQ(1,target.Get());
+	REQUIRE( target.Get() == 1 );
 
-	ASSERT_EQ(0,o1->Get().first);
-	ASSERT_EQ("o1",o1->Get().second);
+	REQUIRE( o1->Get().first == 0 );
+	REQUIRE( o1->Get().second == "o1" );
     ts.AddTransaction(o1->UndoableSet(1,"o1")); //2
-	ASSERT_EQ(1,o1->Get().first);
-	ASSERT_EQ("o1",o1->Get().second);
+	REQUIRE( o1->Get().first == 1 );
+	REQUIRE( o1->Get().second == "o1" );
 
     ts.AddTransaction(o1->UndoableSet(2,"o1")); //3
-	ASSERT_EQ(2,o1->Get().first);
-	ASSERT_EQ("o1",o1->Get().second);
+	REQUIRE( o1->Get().first == 2 );
+	REQUIRE( o1->Get().second == "o1" );
 
     ts.AddTransaction(o1->UndoableSet(3,"o1->1")); //4
-	ASSERT_EQ(3,o1->Get().first);
-	ASSERT_EQ("o1->1",o1->Get().second);
+	REQUIRE( o1->Get().first == 3 );
+	REQUIRE( o1->Get().second == "o1->1" );
 
     ts.AddTransaction(o1->UndoableSet(4,"o1->2")); //5
 
 	target.Increment();
 	ts.AddTransaction(std::make_pair(std::bind(&Target::Decrement,&target),std::bind(&Target::Increment,&target))); //6
-	ASSERT_EQ(2,target.Get());
+	REQUIRE( target.Get() == 2 );
 
     ts.AddTransaction(o2->UndoableSet(4,"o2")); //7
-	ASSERT_EQ(4,o2->Get().first);
-	ASSERT_EQ("o2",o2->Get().second);
-	ASSERT_EQ(4,o1->Get().first);
-	ASSERT_EQ("o1->2",o1->Get().second);
+	REQUIRE( o2->Get().first == 4 );
+	REQUIRE( o2->Get().second == "o2" );
+	REQUIRE( o1->Get().first == 4 );
+	REQUIRE( o1->Get().second == "o1->2" );
 
     ts.AddTransaction(o2->UndoableSet(5,"o2")); //8
  
     ts.UndoLastTransaction(); //7
-	ASSERT_EQ(4,o2->Get().first);
-	ASSERT_EQ("o2",o2->Get().second);
-	ASSERT_EQ(4,o1->Get().first);
-	ASSERT_EQ("o1->2",o1->Get().second);
+	REQUIRE( o2->Get().first == 4 );
+	REQUIRE( o2->Get().second == "o2" );
+	REQUIRE( o1->Get().first == 4 );
+	REQUIRE( o1->Get().second == "o1->2" );
 
     ts.UndoLastTransaction(); //6
-	ASSERT_EQ(2,target.Get());
+	REQUIRE( target.Get() == 2 );
 
     ts.UndoLastTransaction(); //5
-	ASSERT_EQ(1,target.Get());
+	REQUIRE( target.Get() == 1 );
     ts.RedoLastTransaction(); //6
-	ASSERT_EQ(2,target.Get());
+	REQUIRE( target.Get() == 2 );
 
     ts.RedoLastTransaction(); //7
-	ASSERT_EQ(4,o2->Get().first);
-	ASSERT_EQ("o2",o2->Get().second);
-	ASSERT_EQ(4,o1->Get().first);
-	ASSERT_EQ("o1->2",o1->Get().second);
+	REQUIRE( o2->Get().first == 4 );
+	REQUIRE( o2->Get().second == "o2" );
+	REQUIRE( o1->Get().first == 4 );
+	REQUIRE( o1->Get().second == "o1->2" );
 
     ts.RedoLastTransaction(); //8
 
 	for (int i=0; i<8; i++)
 	{
-		ASSERT_NO_THROW(ts.UndoLastTransaction());
+		REQUIRE_NOTHROW(ts.UndoLastTransaction());
 	}
-	ASSERT_THROW(ts.UndoLastTransaction(),std::runtime_error);
+	REQUIRE_THROWS_AS(ts.UndoLastTransaction(),std::runtime_error);
 
-	ASSERT_EQ(0,target.Get());
+	REQUIRE( target.Get() == 0 );
 
 	for (int i=0; i<8; i++)
 	{
-		ASSERT_NO_THROW(ts.RedoLastTransaction());
+		REQUIRE_NOTHROW(ts.RedoLastTransaction());
 	}
-	ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+	REQUIRE_THROWS_AS(ts.RedoLastTransaction(),std::runtime_error);
 
-	ASSERT_EQ(2,target.Get());
+	REQUIRE( target.Get() == 2 );
 }
 
-TEST_F(TransactionStoreTests,CompositeTransaction)
+TEST_CASE_METHOD(TransactionStoreTests,"CompositeTransaction")
 {
     std::shared_ptr<CompositeTransaction> composite(new CompositeTransaction);
    
@@ -150,39 +150,39 @@ TEST_F(TransactionStoreTests,CompositeTransaction)
 	composite->AddTransaction(std::make_pair(std::bind(&Target::Decrement,&target),std::bind(&Target::Increment,&target))); //1
 	target.Increment();
 	composite->AddTransaction(std::make_pair(std::bind(&Target::Decrement,&target),std::bind(&Target::Increment,&target))); //1
-	ASSERT_EQ(2,target.Get());
+	REQUIRE( target.Get() == 2 );
 
     ts.AddTransaction(composite->Get());
 
-	ASSERT_NO_THROW(ts.UndoLastTransaction());
+	REQUIRE_NOTHROW(ts.UndoLastTransaction());
 
-	ASSERT_EQ(0,target.Get());
-	ASSERT_THROW(ts.UndoLastTransaction(),std::runtime_error);
-	ASSERT_EQ(0,target.Get());
+	REQUIRE( target.Get() == 0 );
+	REQUIRE_THROWS_AS(ts.UndoLastTransaction(),std::runtime_error);
+	REQUIRE( target.Get() == 0 );
 
-	ASSERT_NO_THROW(ts.RedoLastTransaction());
-	ASSERT_EQ(2,target.Get());
-	ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+	REQUIRE_NOTHROW(ts.RedoLastTransaction());
+	REQUIRE( target.Get() == 2 );
+	REQUIRE_THROWS_AS(ts.RedoLastTransaction(),std::runtime_error);
 }
 
-TEST_F(TransactionStoreTests,UndoThenRedo)
+TEST_CASE_METHOD(TransactionStoreTests,"UndoThenRedo")
 {
 	ts.AddTransaction(o1->UndoableSet(1,"o1"));
 	ts.AddTransaction(o1->UndoableSet(2,"o1"));
 	ts.AddTransaction(o1->UndoableSet(3,"o1"));
-	ASSERT_EQ(3,o1->Get().first);
+	REQUIRE( o1->Get().first == 3 );
 
 	ts.UndoLastTransaction();
 	ts.UndoLastTransaction();
 
-	ASSERT_EQ(1,o1->Get().first);
+	REQUIRE( o1->Get().first == 1 );
 	ts.AddTransaction(o1->UndoableSet(4,"o1"));
 
-	ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
-	ASSERT_EQ(4,o1->Get().first);
+	REQUIRE_THROWS_AS(ts.RedoLastTransaction(),std::runtime_error);
+	REQUIRE( o1->Get().first == 4 );
 
-	ASSERT_NO_THROW(ts.UndoLastTransaction());
-	ASSERT_EQ(1,o1->Get().first);
+	REQUIRE_NOTHROW(ts.UndoLastTransaction());
+	REQUIRE( o1->Get().first == 1 );
 }
 
 class LifetimeTester : public MyThirdOriginator {
@@ -196,7 +196,7 @@ public:
 };
 int LifetimeTester::Count=0;
 
-TEST_F(TransactionStoreTests,Lifetime)
+TEST_CASE_METHOD(TransactionStoreTests,"Lifetime")
 {
 	{
         std::shared_ptr<LifetimeTester> O3(new LifetimeTester("O3"));
@@ -204,11 +204,11 @@ TEST_F(TransactionStoreTests,Lifetime)
         ts.AddTransaction(O3->UndoableSet(2,"O3.2"));
     }
 
-	ASSERT_NO_THROW(ts.UndoLastTransaction());
-	ASSERT_NO_THROW(ts.RedoLastTransaction());
-	ASSERT_EQ(1,LifetimeTester::Count);
+	REQUIRE_NOTHROW(ts.UndoLastTransaction());
+	REQUIRE_NOTHROW(ts.RedoLastTransaction());
+	REQUIRE( LifetimeTester::Count == 1 );
 
-	ASSERT_NO_THROW(ts.Purge());
+	REQUIRE_NOTHROW(ts.Purge());
 
-	ASSERT_EQ(0,LifetimeTester::Count);
+	REQUIRE( LifetimeTester::Count == 0 );
 }

@@ -8,12 +8,12 @@
 #include <stdexcept>
 #include <memory>
 
-#include "gtest/gtest.h"
+#include "catch.hpp"
 
 using namespace undoredo::transactions;
 using namespace undoredo::memento::test;
 
-TEST(MementoTransactionDocuTest,Main)
+TEST_CASE("MementoTransactionDocuTest,Main")
 {
 
 	TransactionStore<std::list<Transaction> > ts;
@@ -33,14 +33,14 @@ TEST(MementoTransactionDocuTest,Main)
  
  
     ts.UndoLastTransaction();
-	ASSERT_EQ("test1",MO->GetString());
+	REQUIRE( MO->GetString() == "test1" );
     ts.RedoLastTransaction();
-	ASSERT_EQ("test3",MO->GetString());
+	REQUIRE( MO->GetString() == "test3" );
 
-	ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+	REQUIRE_THROWS_AS(ts.RedoLastTransaction(),std::runtime_error);
 }
 
-TEST(MementoTransactionTest,Main)
+TEST_CASE("MementoTransactionTest,Main")
 {
 	TransactionStore<std::list<Transaction> > ts;
     std::shared_ptr<MySecondOriginator> MSO(new MySecondOriginator);
@@ -50,7 +50,7 @@ TEST(MementoTransactionTest,Main)
     DT->BeginTransaction();
     MSO->Set(1);
     ts.AddTransaction(DT->EndTransaction());
-	ASSERT_EQ(1,MSO->Get());
+	REQUIRE( MSO->Get() == 1 );
  
     DT.reset(new DelayedTransaction<MySecondOriginator>(MSO.get()));
     DT->BeginTransaction();
@@ -62,26 +62,26 @@ TEST(MementoTransactionTest,Main)
     MSO->Set(3);
     MSO->Set(4);
     ts.AddTransaction(DT->EndTransaction());
-	ASSERT_EQ(4,MSO->Get());
+	REQUIRE( MSO->Get() == 4 );
  
     DT.reset(new DelayedTransaction<MySecondOriginator>(MSO.get()));
     DT->BeginTransaction();
     MSO->Set(5);
     ts.AddTransaction(DT->EndTransaction());
-	ASSERT_EQ(5,MSO->Get());
+	REQUIRE( MSO->Get() == 5 );
  
     ts.UndoLastTransaction();
-	ASSERT_EQ(4,MSO->Get());
+	REQUIRE( MSO->Get() == 4 );
     ts.UndoLastTransaction();
-	ASSERT_EQ(2,MSO->Get());
+	REQUIRE( MSO->Get() == 2 );
     ts.UndoLastTransaction();
-	ASSERT_EQ(1,MSO->Get());
+	REQUIRE( MSO->Get() == 1 );
     ts.RedoLastTransaction();
-	ASSERT_EQ(2,MSO->Get());
+	REQUIRE( MSO->Get() == 2 );
     ts.RedoLastTransaction();
-	ASSERT_EQ(4,MSO->Get());
+	REQUIRE( MSO->Get() == 4 );
     ts.RedoLastTransaction();
-	ASSERT_EQ(5,MSO->Get());
+	REQUIRE( MSO->Get() == 5 );
 
-	ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+	REQUIRE_THROWS_AS(ts.RedoLastTransaction(),std::runtime_error);
 }

@@ -108,9 +108,9 @@ MyOriginator O;
 O.Set("test",1);
 savedStates.Save(&O); // saving the current state
 O.Set("bla",2); // setting a new state
-ASSERT_EQ("bla",O.GetString());
+REQUIRE("bla",O.GetString());
 savedStates.Undo(&O); // restoring to the saved state
-ASSERT_EQ("test",O.GetString());
+REQUIRE("test",O.GetString());
 ```
 
 ### Transaction and TransactionStore
@@ -163,13 +163,13 @@ std::shared_ptr<SimpleTransactionStateExample> E(new SimpleTransactionStateExamp
 E->Set(0);
 
 ts.AddTransaction(E->SetTransaction(1)); // undoable change of state
-ASSERT_EQ(1,E->Get());
+REQUIRE(1,E->Get());
 
 ts.UndoLastTransaction(); // undo
-ASSERT_EQ(0,E->Get());
+REQUIRE(0,E->Get());
 
 ts.RedoLastTransaction(); // redo
-ASSERT_EQ(1,E->Get());
+REQUIRE(1,E->Get());
 ```
 
 #### Object lifetime management
@@ -200,11 +200,11 @@ MO->Set("test3",3); //this state will be saved
 ts.AddTransaction(DT->EndTransaction());
 
 ts.UndoLastTransaction();
-ASSERT_EQ("test1",MO->GetString());
+REQUIRE("test1",MO->GetString());
 ts.RedoLastTransaction();
-ASSERT_EQ("test3",MO->GetString());
+REQUIRE("test3",MO->GetString());
 
-ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+REQUIRE_THROWS(ts.RedoLastTransaction(),std::runtime_error);
 ```
 	
 +Follow the tests in the undoredotests folder
