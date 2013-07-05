@@ -4,7 +4,7 @@ language: cpp
 branches:
   only:
     - catchmoci
-	
+
 # generate build
 before_script:
   - ./premake4 gmake
