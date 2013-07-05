@@ -1,15 +1,9 @@
 language: cpp
 
-# whitelist
 branches:
   only:
    - catchmoci
 
-before_script:
-   - ls
-
 script:
-  - chmod +x premake4
-  - ./premake4 gmake
   - make -C Build
  

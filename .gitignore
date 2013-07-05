@@ -168,5 +168,8 @@ pip-log.txt
 ## Mine
 #############
 
-Build
+Build\*
+!Build\Makefile
 .svn
+Build/*.sln
+Build/*.vc*roj*
