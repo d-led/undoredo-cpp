@@ -1,0 +1,4 @@
+language: cpp
+
+script:
+  - echo CC=${CC} CXX=${CXX}
