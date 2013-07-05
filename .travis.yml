@@ -7,7 +7,7 @@ branches:
 	
 # generate build
 before_script:
-	- ./premake4 gmake
+  - ./premake4 gmake
 
 script:
   - make -C Build
