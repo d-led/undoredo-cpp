@@ -6,6 +6,17 @@ Summary
 This is a collection of header-only classes enabling some undo-redo/transaction functionality, started as a research on the ways to implement generic Undo/Redo mechanisms in C++.
 The classes are combinable to form sensible undo/redo features and should be easy to use after a couple of exercises.
 
+- [Used in the project](#used-in-the-project)
+- [Compilers](#compilers)
+- [Usage](#usage)
+	- [Memento](#memento)
+	- [MementoStore](#mementostore)
+	- [Transaction and TransactionStore](#transaction-and-transactionstore)
+		- [Object lifetime management](#object-lifetime-management)
+	- [Memento and transactions](#memento-and-transactions)
+- [Hosting](#hosting)
+- [License](#license)
+
 Used in the project
 -------------------
 
