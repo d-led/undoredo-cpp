@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{AEEEA3B1-3432-E440-A35A-6280B8D766FB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\undoredo\compositetransaction.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\undoredo\delayedtransaction.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\undoredo\memento.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\undoredo\mementostore.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\undoredo\stlmementostore.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\undoredo\transaction.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\undoredo\transactionstore.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\undoredo\undoableaggregate.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\undoredo\undoredoable.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
