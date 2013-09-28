@@ -59,7 +59,7 @@ local sln=solution "undo-redo"
     location "Build"
 	sln.absbasedir=path.getabsolute(sln.basedir)
 	configurations { "Debug", "Release" }
-	platforms { "native" }
+	platforms { "native", "x32", "x64" }
 	includedirs {
 		sln.basedir,
 		path.join(sln.basedir,"undoredo"),
