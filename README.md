@@ -114,7 +114,10 @@ Using the StlMementoStore class we can store and restore states of individual ob
 are identified by their raw pointers, however other schemes can be envisioned. Using the Store looks like that:
 
 ```cpp
-auto savedStates=StlMementoStore<MyOriginator,std::map<MyOriginator*,std::list<typename MyOriginator::MementoType> >>();
+auto savedStates=StlMementoStore<
+	MyOriginator,
+	std::map<MyOriginator*,
+			std::list<typename MyOriginator::MementoType>>>();
 MyOriginator O;
 O.Set("test",1);
 savedStates.Save(&O); // saving the current state
@@ -138,7 +141,8 @@ typedef std::pair<Action/*Undo*/,Action/*Redo*/> Transaction;
 An object can offer a method, which changes the state of the object and returns a transaction that can undo or redo the state change:
 
 ```cpp
-class SimpleTransactionStateExample : public std::enable_shared_from_this<SimpleTransactionStateExample>
+class SimpleTransactionStateExample :
+	  public std::enable_shared_from_this<SimpleTransactionStateExample>
 {
 private:
     int state;
@@ -156,9 +160,9 @@ public:
 	Transaction SetTransaction(int s)
 	{
 		Transaction Res=std::make_pair	(
-						std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
-						std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
-						);
+			std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
+			std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
+		);
 		Set(s);
 		return Res;
 	}
@@ -202,7 +206,8 @@ std::shared_ptr<DelayedTransaction<MyOriginator> > DT;
 DT.reset(new DelayedTransaction<MyOriginator>(MO.get()));
 DT->BeginTransaction(); // saves MO's state for undo
 MO->Set("test1",1);
-ts.AddTransaction(DT->EndTransaction()); // EndTransaction saves MO's state for redo and returns the transaction
+ts.AddTransaction(DT->EndTransaction());
+// EndTransaction saves MO's state for redo and returns the transaction
 
 DT.reset(new DelayedTransaction<MyOriginator>(MO.get()));
 DT->BeginTransaction();
