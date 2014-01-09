@@ -45,7 +45,8 @@ function SetUpCompilerSpecificPostBuildEvent()
 
 	configuration {"gmake"}
 		postbuildcommands  { "$(TARGET)" }
-		buildoptions { "-std=c++0x" }
+		buildoptions { "-std=c++0x",  "--coverage" }
+		linkoptions { "--coverage" }
 
 	configuration {"codeblocks" }
 		postbuildcommands { "$(TARGET_OUTPUT_FILE)"}

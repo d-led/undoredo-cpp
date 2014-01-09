@@ -168,3 +168,9 @@ pip-log.txt
 #############
 
 .svn
+*.d
+*.gcda
+*.gcno
+*.o
+Build/out
+coverage.info

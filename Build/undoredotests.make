@@ -34,9 +34,9 @@ ifeq ($(config),debug)
   DEFINES   += -DDEBUG -D_DEBUG -DCATCH_CONFIG_CPP11_NULLPTR
   INCLUDES  += -I.. -I../undoredo -I../Catch/single_include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -g -std=c++0x
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -g -std=c++0x --coverage
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += 
+  LDFLAGS   += --coverage
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += 
   LDDEPS    += 
@@ -58,9 +58,9 @@ ifeq ($(config),release)
   DEFINES   += -DRELEASE -DCATCH_CONFIG_CPP11_NULLPTR
   INCLUDES  += -I.. -I../undoredo -I../Catch/single_include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -O2 -std=c++0x
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -O2 -std=c++0x --coverage
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s
+  LDFLAGS   += -s --coverage
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += 
   LDDEPS    += 
@@ -82,9 +82,9 @@ ifeq ($(config),debug32)
   DEFINES   += -DDEBUG -D_DEBUG -DCATCH_CONFIG_CPP11_NULLPTR
   INCLUDES  += -I.. -I../undoredo -I../Catch/single_include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -g -m32 -std=c++0x
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -g -m32 -std=c++0x --coverage
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m32 -L/usr/lib32
+  LDFLAGS   += -m32 -L/usr/lib32 --coverage
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += 
   LDDEPS    += 
@@ -106,9 +106,9 @@ ifeq ($(config),release32)
   DEFINES   += -DRELEASE -DCATCH_CONFIG_CPP11_NULLPTR
   INCLUDES  += -I.. -I../undoredo -I../Catch/single_include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -O2 -m32 -std=c++0x
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -O2 -m32 -std=c++0x --coverage
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m32 -L/usr/lib32
+  LDFLAGS   += -s -m32 -L/usr/lib32 --coverage
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += 
   LDDEPS    += 
@@ -130,9 +130,9 @@ ifeq ($(config),debug64)
   DEFINES   += -DDEBUG -D_DEBUG -DCATCH_CONFIG_CPP11_NULLPTR
   INCLUDES  += -I.. -I../undoredo -I../Catch/single_include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -g -m64 -std=c++0x
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -g -m64 -std=c++0x --coverage
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m64 -L/usr/lib64
+  LDFLAGS   += -m64 -L/usr/lib64 --coverage
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += 
   LDDEPS    += 
@@ -154,9 +154,9 @@ ifeq ($(config),release64)
   DEFINES   += -DRELEASE -DCATCH_CONFIG_CPP11_NULLPTR
   INCLUDES  += -I.. -I../undoredo -I../Catch/single_include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -O2 -m64 -std=c++0x
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -O2 -m64 -std=c++0x --coverage
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m64 -L/usr/lib64
+  LDFLAGS   += -s -m64 -L/usr/lib64 --coverage
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += 
   LDDEPS    += 
@@ -173,10 +173,10 @@ endif
 
 OBJECTS := \
 	$(OBJDIR)/transactionstoretests.o \
+	$(OBJDIR)/stlmementostoretests.o \
+	$(OBJDIR)/mementotest.o \
 	$(OBJDIR)/mementotransactiontest.o \
 	$(OBJDIR)/transactiontests.o \
-	$(OBJDIR)/mementotest.o \
-	$(OBJDIR)/stlmementostoretests.o \
 
 RESOURCES := \
 
@@ -244,16 +244,16 @@ endif
 $(OBJDIR)/transactionstoretests.o: ../undoredotests/transactionstoretests.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
-$(OBJDIR)/mementotransactiontest.o: ../undoredotests/mementotransactiontest.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
-$(OBJDIR)/transactiontests.o: ../undoredotests/transactiontests.cpp
+$(OBJDIR)/stlmementostoretests.o: ../undoredotests/stlmementostoretests.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 $(OBJDIR)/mementotest.o: ../undoredotests/mementotest.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
-$(OBJDIR)/stlmementostoretests.o: ../undoredotests/stlmementostoretests.cpp
+$(OBJDIR)/mementotransactiontest.o: ../undoredotests/mementotransactiontest.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
+$(OBJDIR)/transactiontests.o: ../undoredotests/transactiontests.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 
