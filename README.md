@@ -1,14 +1,29 @@
 Summary
 =======
 
+[![Build Status](https://travis-ci.org/d-led/undoredo-cpp.png?branch=catchmoci)](https://travis-ci.org/d-led/undoredo-cpp)
+
+This is a collection of header-only classes enabling some undo-redo/transaction functionality, started as a research on the ways to implement generic Undo/Redo mechanisms in C++.
+The classes are combinable to form sensible undo/redo features and should be easy to use after a couple of exercises.
+
+- [Used in the project](#used-in-the-project)
+- [Compilers](#compilers)
+- [Usage](#usage)
+	- [Memento](#memento)
+	- [MementoStore](#mementostore)
+	- [Transaction and TransactionStore](#transaction-and-transactionstore)
+		- [Object lifetime management](#object-lifetime-management)
+	- [Memento and transactions](#memento-and-transactions)
+- [Hosting](#hosting)
+- [License](#license)
+=======
 
 This is a research on the ways to implement generic Undo/Redo mechanisms in C++.
-
 
 Used in the project
 -------------------
 
- * [googletest](http://code.google.com/p/googletest/) for tests
+ * [catch](http://catch-lib.net) for tests
  * [Premake](http://industriousone.com/premake) for generating makefiles
 
 Compilers
@@ -101,14 +116,17 @@ Using the StlMementoStore class we can store and restore states of individual ob
 are identified by their raw pointers, however other schemes can be envisioned. Using the Store looks like that:
 
 ```cpp
-auto savedStates=StlMementoStore<MyOriginator,std::map<MyOriginator*,std::list<typename MyOriginator::MementoType> >>();
+auto savedStates=StlMementoStore<
+	MyOriginator,
+	std::map<MyOriginator*,
+			std::list<typename MyOriginator::MementoType>>>();
 MyOriginator O;
 O.Set("test",1);
 savedStates.Save(&O); // saving the current state
 O.Set("bla",2); // setting a new state
-ASSERT_EQ("bla",O.GetString());
+REQUIRE("bla",O.GetString());
 savedStates.Undo(&O); // restoring to the saved state
-ASSERT_EQ("test",O.GetString());
+REQUIRE("test",O.GetString());
 ```
 
 ### Transaction and TransactionStore
@@ -125,7 +143,8 @@ typedef std::pair<Action/*Undo*/,Action/*Redo*/> Transaction;
 An object can offer a method, which changes the state of the object and returns a transaction that can undo or redo the state change:
 
 ```cpp
-class SimpleTransactionStateExample : public std::enable_shared_from_this<SimpleTransactionStateExample>
+class SimpleTransactionStateExample :
+	  public std::enable_shared_from_this<SimpleTransactionStateExample>
 {
 private:
     int state;
@@ -143,9 +162,9 @@ public:
 	Transaction SetTransaction(int s)
 	{
 		Transaction Res=std::make_pair	(
-						std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
-						std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
-						);
+			std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
+			std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
+		);
 		Set(s);
 		return Res;
 	}
@@ -161,13 +180,13 @@ std::shared_ptr<SimpleTransactionStateExample> E(new SimpleTransactionStateExamp
 E->Set(0);
 
 ts.AddTransaction(E->SetTransaction(1)); // undoable change of state
-ASSERT_EQ(1,E->Get());
+REQUIRE(1,E->Get());
 
 ts.UndoLastTransaction(); // undo
-ASSERT_EQ(0,E->Get());
+REQUIRE(0,E->Get());
 
 ts.RedoLastTransaction(); // redo
-ASSERT_EQ(1,E->Get());
+REQUIRE(1,E->Get());
 ```
 
 #### Object lifetime management
@@ -189,7 +208,8 @@ std::shared_ptr<DelayedTransaction<MyOriginator> > DT;
 DT.reset(new DelayedTransaction<MyOriginator>(MO.get()));
 DT->BeginTransaction(); // saves MO's state for undo
 MO->Set("test1",1);
-ts.AddTransaction(DT->EndTransaction()); // EndTransaction saves MO's state for redo and returns the transaction
+ts.AddTransaction(DT->EndTransaction());
+// EndTransaction saves MO's state for redo and returns the transaction
 
 DT.reset(new DelayedTransaction<MyOriginator>(MO.get()));
 DT->BeginTransaction();
@@ -198,11 +218,11 @@ MO->Set("test3",3); //this state will be saved
 ts.AddTransaction(DT->EndTransaction());
 
 ts.UndoLastTransaction();
-ASSERT_EQ("test1",MO->GetString());
+REQUIRE("test1",MO->GetString());
 ts.RedoLastTransaction();
-ASSERT_EQ("test3",MO->GetString());
+REQUIRE("test3",MO->GetString());
 
-ASSERT_THROW(ts.RedoLastTransaction(),std::runtime_error);
+REQUIRE_THROWS(ts.RedoLastTransaction(),std::runtime_error);
 ```
 	
 +Follow the tests in the undoredotests folder

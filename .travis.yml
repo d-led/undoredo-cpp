@@ -1,0 +1,24 @@
+language: cpp
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "bZqDVFw5v80yGk3NR9HBkSjNN3L+uUPfNKvMmbkN2mT6mjOlSPSh5XvkjBOeizMHf8MhN0UOEtGbz3ameFcCP8ExZQ/jV8AdPhCff8OsMy/LaZ7MM1DeIR10ed/s/Y6SjJEHEm5nDv5maQ43vy2z2HAPgFjZgGhmEVoBK8WPmqk="
+
+addons:
+  coverity_scan:
+    project:
+      name: "d-led/undoredo-cpp"
+      description: "simple undo-redo in c++"
+    notification_email: dmlled@yahoo.com
+    build_command:   "make -C Build config=debug"
+    branch_pattern: catchmoci
+
+branches:
+  only:
+   - catchmoci
+
+script:
+  - make -C Build config=release
+ 

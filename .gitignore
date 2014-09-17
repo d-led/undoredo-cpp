@@ -139,7 +139,6 @@ Desktop.ini
 *.egg
 *.egg-info
 dist
-build
 eggs
 parts
 bin
@@ -168,5 +167,4 @@ pip-log.txt
 ## Mine
 #############
 
-Build
 .svn
