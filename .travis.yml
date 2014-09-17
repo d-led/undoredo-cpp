@@ -13,11 +13,7 @@ addons:
       description: "simple undo-redo in c++"
     notification_email: dmlled@yahoo.com
     build_command:   "make -C Build config=debug"
-    branch_pattern: catchmoci
-
-branches:
-  only:
-   - catchmoci
+    branch_pattern: master
 
 script:
   - make -C Build config=release
