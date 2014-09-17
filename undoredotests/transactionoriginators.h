@@ -19,19 +19,20 @@ public:
     {
         state=s;
     }
-	int Get() const
-	{
-		return state;
-	}
+    int Get() const
+    {
+        return state;
+    }
     Transaction SetTransaction(int s)
     {
         Transaction Res=std::make_pair(
-								std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
-								std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
+                                std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),state),
+                                std::bind(&SimpleTransactionStateExample::Set,shared_from_this(),s)
                              );
-		Set(s);
-		return Res;
+        Set(s);
+        return Res;
     }
+    SimpleTransactionStateExample() :state(0){}
 };
 
 /// Transaction-undoable example class
@@ -53,10 +54,10 @@ public:
         name=n;
     }
 
-	std::pair<int,std::string> Get()
-	{
-		return std::make_pair(state,name);
-	}
+    std::pair<int,std::string> Get()
+    {
+        return std::make_pair(state,name);
+    }
  
 //---- class-specific transaction
  
@@ -92,12 +93,12 @@ public:
 };
 
 class Target {
-	int state;
+    int state;
 public:
-	Target():state(0){}
-	void Increment(){++state;}
-	void Decrement(){--state;}
-	int Get() const { return state; }
+    Target():state(0){}
+    void Increment(){++state;}
+    void Decrement(){--state;}
+    int Get() const { return state; }
 };
 
 } //test
