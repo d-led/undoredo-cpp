@@ -240,4 +240,4 @@ Author: Dmitry Ledentsov
 
 MIT License (http://www.opensource.org/licenses/mit-license.php)
 
-googletest, Premake and BOOST retain their respective licenses
+dependencies retain their respective licenses
